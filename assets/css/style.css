@@ -1,3 +1,65 @@
 body{
-    background-color: rgb(204, 127, 255);
+    /* background-color: rgb(130, 123, 134); */
+    background-image: url(http://st.gde-fon.com/wallpapers_original/601300_kiberpank_gorod_poezd_1920x1200_www.Gde-Fon.com.jpg);
+    background-repeat:  no-repeat;
+    background-size: cover;
+    background-position-x: center;
+    background-position-y: 20%;
+    color: rgb(255, 255, 255);
+    text-shadow: 2px 2px rgb(63, 8, 8);
+}
+.row-box-s-e{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.row-box-center{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.column-box-s-e{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    
+}
+.column-box-center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+
+
+
+.t-a-c{
+    text-align: center;
+}
+.button{
+    font-size: 20px;
+    background-color: rgb(65, 65, 65);
+    color: rgb(204, 204, 204);
+    padding: 5px;
+    width: 75px;
+}
+.button:hover{
+    background-color: rgb(182, 182, 182);
+    color: rgb(22, 22, 22);
+    text-shadow: 2px 2px rgb(255, 255, 255);
+
+}
+
+h1{
+    font-size: 50px;
+}
+
+h3{
+    font-size: 30px;
+}
+
+.label-text{
+    font-size: 18;
+
+
 }

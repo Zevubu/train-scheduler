@@ -5,11 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Train scedule</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/resets.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 
     <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
 </head>
 <body>
+    <header class="row-box-center">
+        <section class="column-box-s-e t-a-c t-shadow">
+            <h1>Train Scheduler</h1>
+            <h3> Fill out form below to schedule your trains.</h3>
+        </section>
+    </header>
+    <main class="row-box-center">
+        <section class="column-box-s-e">
+            <section class="column-box-s-e">
+                <h3>Current train schedule</h3>
+                <section>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Delete: </th>
+                                <th scope="col">Train Name: </th>
+                                <th scope="col">Destination: </th>
+                                <th scope="col">Frequency (min): </th>
+                                <th scope="col">Next Arrival: </th>
+                                <th scope="col">Minutes Away: </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </section>
+            </section>
+
+
+            <section class="column-box-s-e">
+                <section id="name-section" class="row-box-s-e">
+                    <form>
+                        <section class="column-box-center">
+                            <label for="name-input" class="label-text">Name new train here.</label>
+                            <input type="text" class="form-controler" id="name-input">
+                        </section>
+                        <section class="column-box-center">
+                            <label for="destination-input" class="label-text">Destination</label>
+                            <input type="text" class="form-controler" id="destination-input">
+                        </section>
+                        <section class="column-box-center">
+                            <label for="first-time-input" class="label-text">The first train leaves at:</label>
+                            <input type="time" data-format="HH:mm"  class="form-controler" id="first-time-input">
+                        </section>
+                        <section class="column-box-center">
+                            <label for="frequency-input" class="label-text">Frequency by Minute</label>
+                            <input type="number" min=0 class="form-controler" id="frequency-input">
+                        </section>
+                        <p type="submit"  class="button t-a-c" id="train">Submit</p>
+                    </form>
+
+                </section> 
+            </section>
+        </section>
+    </main>
+
+
+
+
     
 
     <script type="text/javascript" src="assets/javascript/trainScript.js"></script>
