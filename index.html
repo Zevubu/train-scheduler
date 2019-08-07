@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Train scedule</title>
+    <!-- resets then base css -->
     <link rel="stylesheet" type="text/css" href="assets/css/resets.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-
-    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
-
 </head>
 <body>
     <header class="row-box-center">
@@ -21,7 +19,7 @@
     <main class="row-box-center">
         <section class="column-box-s-e">
             <section class="column-box-s-e">
-                <h3>Current train schedule</h3>
+                <h4>Current train schedule</h4>
                 <section>
                     <table>
                         <thead>
@@ -39,8 +37,6 @@
                     </table>
                 </section>
             </section>
-
-
             <section class="column-box-s-e">
                 <section id="name-section" class="row-box-s-e">
                     <form>
@@ -60,19 +56,20 @@
                             <label for="frequency-input" class="label-text">Frequency by Minute</label>
                             <input type="number" min=0 class="form-controler" id="frequency-input">
                         </section>
-                        <p type="submit"  class="button t-a-c" id="train">Submit</p>
+                        <p type="submit"  class="button t-a-c" id="new-train">Submit</p>
                     </form>
-
                 </section> 
             </section>
         </section>
     </main>
-
-
-
-
-    
-
+    <!-- keys -->
+    <script type="text/javascript" src="assets/javascript/keys.js"></script>
+    <!-- moments -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-database.js"></script>
+    <!--main js file -->
     <script type="text/javascript" src="assets/javascript/trainScript.js"></script>
 </body>
 </html>
