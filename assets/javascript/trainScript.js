@@ -1,8 +1,9 @@
 window.onload = function(){
     let newName;
-    let trainDestination;
+    let newDestination;
     let firstTime;
     let frequency;
+    let newTrain;
     
     // link to firebase.
     var firebaseConfig = {
@@ -32,22 +33,90 @@ window.onload = function(){
     let destinationInput = document.getElementById("destination-input");
     let timeInput = document.getElementById("first-time-input");
     let frequencyInput = document.getElementById("frequency-input");
-    
+
 
     newTrainBtn.addEventListener("click", function(){
         event.preventDefault();
         newName = nameInput.value.trim();
         console.log(newName);
-        trainDestination = destinationInput.value.trim();
-        console.log(trainDestination);
+        newDestination = destinationInput.value.trim();
+        console.log(newDestination);
         firstTime = timeInput.value.trim();
         console.log(firstTime);
         frequency = frequencyInput.value.trim();
         console.log(frequency);
 
+        newTrain = {
+            trainName: newName,
+            trainDestination: newDestination,
+            trainFirstTime: firstTime,
+            trainFrequency: frequency,
+        };
+
+        database.ref().push(newTrain);
+        console.log(newTrain);
+
+        nameInput.value = "";
+        destinationInput.value = "";
+        timeInput.value = "";
+        frequencyInput.value = "";
+    });
+
+    database.ref().on("child_added", function(childSnapshot){
+        console.log(childSnapshot.val());
+        console.log(`snapshot length${childSnapshot.length}`)
+        // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
+        let theBaudy = document.getElementById("the-baudy");
+        let trainNBlock = childSnapshot.val().trainName;
+        let trainDBlock = childSnapshot.val().trainDestination;
+        let trainFTBlock = childSnapshot.val().trainFirstTime;
+        let trainFBlock = childSnapshot.val().trainFrequency;
+        let trainAdder = [trainNBlock, trainDBlock, trainFTBlock,trainFBlock]
+        
+        console.log(trainNBlock);
+        console.log(trainDBlock);
+        console.log(trainFTBlock);
+        console.log(trainFBlock);
+        let addTrain = document.createElement("tr");
+            
+
+            let newButton = document.createElement("button");
+            newButton.setAttribute("class", "delete")
+            newButton.textContent = ("x")
+            
+            
+            let nTrap = document.createElement("td");
+
+        let nNode = document.createTextNode(trainNBlock);
+        nTrap.appendChild(nNode);
+        addTrain.appendChild(nTrap);
+        let dTrap = document.createElement("td");
+        let dNode = document.createTextNode(trainDBlock);
+        dTrap.appendChild(dNode);
+        addTrain.appendChild(dTrap);
+        let ftTrap = document.createElement("td");
+        let ftNode = document.createTextNode(trainFTBlock);
+        ftTrap.appendChild(ftNode);
+        addTrain.appendChild(ftTrap);
+        let fTrap = document.createElement("td");
+        let fNode = document.createTextNode(trainFBlock);
+        fTrap.appendChild(fNode);
+        addTrain.appendChild(fTrap);
+
+        theBaudy.appendChild(addTrain);
+        
+       
+        
+ 
+      
 
 
-    })
+
+
+
+
+
+    });
 
 
 
