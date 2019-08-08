@@ -4,7 +4,13 @@ window.onload = function(){
     let firstTime;
     let frequency;
     let newTrain;
-    
+    let theTime;
+    let clock = document.getElementById("clock");
+    let newTrainBtn = document.getElementById("new-train");
+    let nameInput = document.getElementById("name-input");
+    let destinationInput = document.getElementById("destination-input");
+    let timeInput = document.getElementById("first-time-input");
+    let frequencyInput = document.getElementById("frequency-input");
     // link to firebase.
     var firebaseConfig = {
         apiKey: FBKEY,
@@ -23,16 +29,20 @@ window.onload = function(){
 
     console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
 
-    let averageTrainInterval = 7;
-    let firstTrain = "03:00"
-    let lastTrain = "23:00"
+
+ 
+
+  
+        
+    setInterval(function(startTime){
+        theTime = moment().format('hh:mm  a')
+        clock.innerHTML = (theTime);
+        console.log(`the time is ${theTime}`)
+    }, 1000);
+
+    // setInterval();
 
 
-    let newTrainBtn = document.getElementById("new-train");
-    let nameInput = document.getElementById("name-input");
-    let destinationInput = document.getElementById("destination-input");
-    let timeInput = document.getElementById("first-time-input");
-    let frequencyInput = document.getElementById("frequency-input");
 
 
     newTrainBtn.addEventListener("click", function(){
@@ -52,6 +62,7 @@ window.onload = function(){
             trainFirstTime: firstTime,
             trainFrequency: frequency,
         };
+        // need to add paramiters so you have to have all boxes filled
 
         database.ref().push(newTrain);
         console.log(newTrain);
@@ -62,60 +73,71 @@ window.onload = function(){
         frequencyInput.value = "";
     });
 
-    database.ref().on("child_added", function(childSnapshot){
-        console.log(childSnapshot.val());
-        console.log(`snapshot length${childSnapshot.length}`)
+    database.ref().on("child_added", function(childSnapshot, prevChildKey){
+        let child = childSnapshot.val();
+        console.log(child);
         // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
         let theBaudy = document.getElementById("the-baudy");
+        // get names from firebase
         let trainNBlock = childSnapshot.val().trainName;
         let trainDBlock = childSnapshot.val().trainDestination;
         let trainFTBlock = childSnapshot.val().trainFirstTime;
         let trainFBlock = childSnapshot.val().trainFrequency;
-        let trainAdder = [trainNBlock, trainDBlock, trainFTBlock,trainFBlock]
+
+        // first train pushed back a year.
+        let firstTimeConverter = moment(trainFTBlock, "hh:mm a").subtract(1,"years");
+        console.log(`first time: ${firstTimeConverter}`);
+
+        
+       
+
         
         console.log(trainNBlock);
         console.log(trainDBlock);
         console.log(trainFTBlock);
         console.log(trainFBlock);
         let addTrain = document.createElement("tr");
+        addTrain.setAttribute("value", child)
             
+        //delete button. 
+        let xTrap = document.createElement("td");
+        let xNode = document.createTextNode("X");
+        xTrap.setAttribute("class", "button t-a-c")
+        xTrap.addEventListener("click", function(){
+            console.log("click")
+            // let fireVal = this.getAttribute("value")
+            // database.remove(fireVal)
+            this.closest("tr").remove();
 
-            let newButton = document.createElement("button");
-            newButton.setAttribute("class", "delete")
-            newButton.textContent = ("x")
-            
-            
-            let nTrap = document.createElement("td");
-
+        });
+        xTrap.appendChild(xNode);
+        addTrain.appendChild(xTrap);
+        
+        // train name
+        let nTrap = document.createElement("td");
         let nNode = document.createTextNode(trainNBlock);
         nTrap.appendChild(nNode);
         addTrain.appendChild(nTrap);
+
+        // train destination
         let dTrap = document.createElement("td");
         let dNode = document.createTextNode(trainDBlock);
         dTrap.appendChild(dNode);
         addTrain.appendChild(dTrap);
-        let ftTrap = document.createElement("td");
-        let ftNode = document.createTextNode(trainFTBlock);
-        ftTrap.appendChild(ftNode);
-        addTrain.appendChild(ftTrap);
+
+        // train frequency
         let fTrap = document.createElement("td");
         let fNode = document.createTextNode(trainFBlock);
         fTrap.appendChild(fNode);
         addTrain.appendChild(fTrap);
+        
+        // train start time.
+        let ftTrap = document.createElement("td");
+        let ftNode = document.createTextNode(trainFTBlock);
+        ftTrap.appendChild(ftNode);
+        addTrain.appendChild(ftTrap);
 
         theBaudy.appendChild(addTrain);
-        
-       
-        
- 
-      
-
-
-
-
-
-
-
     });
 
 
