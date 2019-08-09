@@ -70,13 +70,14 @@ window.onload = function(){
         frequencyInput.value = "";
     });
 
+    // need to make 2 functions for current time 
 
 
-    database.ref().on("child_added", function(childSnapshot, child ){
+
+    database.ref().on("child_added", function(childSnapshot){
         // Are you kidding me! An 2 hours of work and all I needed to put in was childSnapshot.key!
         let key = childSnapshot.key;    
         // get names from firebase
-        console.log("Previous Post ID: " + child)
         let trainNBlock = childSnapshot.val().trainName;
         let trainDBlock = childSnapshot.val().trainDestination;
         let trainFTBlock = childSnapshot.val().trainFirstTime;
@@ -119,15 +120,15 @@ window.onload = function(){
         let xNode = document.createTextNode("X");
         xTrap.setAttribute("class", "button t-a-c")
         xTrap.addEventListener("click", function(){
-        console.log("click")
-        let closeTr = this.closest("tr");
-        closeTr.remove();
+        // console.log("click")
+            let closeTr = this.closest("tr");
+            closeTr.remove();
             
-        var adaRef = firebase.database().ref(key);
-            adaRef.remove().then(function() {
-            console.log("Remove succeeded.")
-            }).catch(function(error){
-            console.log("Remove failed: " + error.message)
+            var adaRef = firebase.database().ref(key);
+                adaRef.remove().then(function() {
+                console.log("Remove succeeded.")
+                }).catch(function(error){
+                console.log("Remove failed: " + error.message)
             });    
         });
         xTrap.appendChild(xNode);
@@ -165,8 +166,6 @@ window.onload = function(){
         maTrap.appendChild(maNode);
         addTrain.appendChild(maTrap);
         theBaudy.appendChild(addTrain);
-      
-      
         
     },function(errorObject){
         console.log("The read failed: " + errorObject.code);
@@ -174,12 +173,11 @@ window.onload = function(){
 
     // I had to reproduce entire database child snap shot thing here to get my numbers to update.
     let timerUpdate = function(){
-        count = 0
         theBaudy.innerHTML = ("");
-            database.ref().on("child_added", function(childSnapshot, prevChildKey){
-            let key = prevChildKey;
+            database.ref().on("child_added", function(childSnapshot){
+            let key = childSnapshot.key; 
             // get names from firebase
-            if(count > 0){
+           
             trainNBlock = childSnapshot.val().trainName;
             trainDBlock = childSnapshot.val().trainDestination;
             trainFTBlock = childSnapshot.val().trainFirstTime;
@@ -203,6 +201,12 @@ window.onload = function(){
             xTrap.setAttribute("class", "button t-a-c")
             xTrap.addEventListener("click", function(){
                 this.closest("tr").remove();
+                var adaRef = firebase.database().ref(key);
+                adaRef.remove().then(function() {
+                console.log("Remove succeeded.")
+                }).catch(function(error){
+                console.log("Remove failed: " + error.message)
+            });  
             });
             xTrap.appendChild(xNode);
             addTrain.appendChild(xTrap);
@@ -234,17 +238,13 @@ window.onload = function(){
             maTrap.appendChild(maNode);
             addTrain.appendChild(maTrap);
             theBaudy.appendChild(addTrain);
-            count++;
-            }
-            else{
-            count++;
-            };
+    
         },function(errorObject){
             console.log("The read failed: " + errorObject.code);
         });
     };
 
-    setInterval(timerUpdate, 223000);
+    setInterval(timerUpdate, 1000);
   
 }; 
     // an abandond atempt to make a timer to update next arrival and minutes away
