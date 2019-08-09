@@ -5,6 +5,8 @@ window.onload = function(){
     let frequency;
     let newTrain;
     let theTime;
+    let currentTime;
+
     let clock = document.getElementById("clock");
     let newTrainBtn = document.getElementById("new-train");
     let nameInput = document.getElementById("name-input");
@@ -29,21 +31,12 @@ window.onload = function(){
 
     console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
 
-
- 
-
-  
         
     setInterval(function(startTime){
-        theTime = moment().format('hh:mm  a')
+        theTime = moment().format('hh:mm:ss a')
         clock.innerHTML = (theTime);
-        console.log(`the time is ${theTime}`)
+        // console.log(`the time is ${theTime}`)
     }, 1000);
-
-    // setInterval();
-
-
-
 
     newTrainBtn.addEventListener("click", function(){
         event.preventDefault();
@@ -85,9 +78,18 @@ window.onload = function(){
         let trainFBlock = childSnapshot.val().trainFrequency;
 
         // first train pushed back a year.
-        let firstTimeConverter = moment(trainFTBlock, "hh:mm a").subtract(1,"years");
+        let firstTimeConverter = moment(trainFTBlock, "hh:mm a").subtract(1,"months");
         console.log(`first time: ${firstTimeConverter}`);
 
+        // the difference between times.
+        let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
+        console.log(`The time difference is: ${diffTime}`)
+
+        // Time remainder before next train
+        let timeRemainder;
+
+        // minutes until it get here.
+        let minAway;
         
        
 
