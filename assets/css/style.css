@@ -31,10 +31,16 @@ body{
     
 }
 
-
-
 .t-a-c{
     text-align: center;
+}
+
+.td-box{
+padding: 2px;
+border: black solid 2px;
+background-color: rgba(161, 161, 161, 0.432);
+margin: 2px;
+text-align: center;
 }
 .button{
     background-color: rgb(65, 65, 65);
@@ -65,5 +71,19 @@ h3{
 .label-text{
     font-size: 18;
 
+
+}
+
+@media screen and (max-width: 1300px){
+    body{
+        /* background-color: rgb(130, 123, 134); */
+        background-image: url(http://st.gde-fon.com/wallpapers_original/601300_kiberpank_gorod_poezd_1920x1200_www.Gde-Fon.com.jpg);
+        background-repeat:  no-repeat;
+        background-size: inherit;
+        background-position-x: center;
+        background-position-y: 20%;
+        color: rgb(255, 255, 255);
+        text-shadow: 2px 2px rgb(63, 8, 8);
+    }
 
 }

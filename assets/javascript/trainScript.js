@@ -42,6 +42,127 @@ window.onload = function(){
         // console.log(`the time is ${theTime}`)
     }, 1000);
 
+   
+
+    // need to make 2 functions for current time 
+
+
+    let trainMaker = function(){
+            database.ref().on("child_added", function(childSnapshot){
+            // Are you kidding me! An 2 hours of work and all I needed to put in was childSnapshot.key!
+            let key = childSnapshot.key;    
+            // get names from firebase
+            let trainNBlock = childSnapshot.val().trainName;
+            let trainDBlock = childSnapshot.val().trainDestination;
+            let trainFTBlock = childSnapshot.val().trainFirstTime;
+            let trainFBlock = childSnapshot.val().trainFrequency;
+                
+            console.log(trainNBlock);
+            console.log(trainDBlock);
+            console.log(trainFTBlock);
+            console.log(trainFBlock);
+                
+            // first train pushed back a year.
+            let firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
+            console.log(`first time: ${firstTimeConverter}`);
+
+            // the difference between times.
+            let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
+                console.log(`The time difference is: ${diffTime}`)
+
+            // Time remainder before next train
+            let timeRemainder = diffTime % trainFBlock;
+            console.log(`remainder: ${timeRemainder}`)
+
+            // the two below this need to self update.
+                
+            // minutes until it get here.
+            // if()
+            let minAway = trainFBlock - timeRemainder;
+            console.log(`minutes away ${minAway}`)
+
+            // next train
+            let nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
+            console.log(`arrival time: ${nextTrain}`)
+                
+            // make tr Element
+            let addTrain = document.createElement("tr");
+            addTrain.setAttribute("class", "tr-box")
+            // addTrain.setAttribute("lock", key)
+                    
+            //delete button. 
+            let xTrap = document.createElement("td");
+            let xNode = document.createTextNode("X");
+            xTrap.setAttribute("class", "td-box button t-a-c")
+            xTrap.addEventListener("click", function(){
+            // console.log("click")
+                let closeTr = this.closest("tr");
+                closeTr.remove();
+                
+                var adaRef = firebase.database().ref(key);
+                    adaRef.remove().then(function() {
+                    console.log("Remove succeeded.")
+                    }).catch(function(error){
+                    console.log("Remove failed: " + error.message)
+                });    
+            });
+            xTrap.appendChild(xNode);
+            addTrain.appendChild(xTrap);
+                
+            // train name
+            let nTrap = document.createElement("td");
+            nTrap.setAttribute("class", "td-box")
+            let nNode = document.createTextNode(trainNBlock);
+            nTrap.appendChild(nNode);
+            addTrain.appendChild(nTrap);
+
+            // train destination
+            let dTrap = document.createElement("td");
+            dTrap.setAttribute("class", "td-box")
+            let dNode = document.createTextNode(trainDBlock);
+            dTrap.appendChild(dNode);
+            addTrain.appendChild(dTrap);
+
+            // train frequency
+            let fTrap = document.createElement("td");
+            fTrap.setAttribute("class", "td-box")
+            let fNode = document.createTextNode(trainFBlock);
+            fTrap.appendChild(fNode);
+            addTrain.appendChild(fTrap);
+            
+            // train start time.
+            let naTrap = document.createElement("td");
+            naTrap.setAttribute("class", "td-box")
+            let naNode = document.createTextNode(nextTrain);
+            naTrap.appendChild(naNode);
+            addTrain.appendChild(naTrap);
+
+            // minutes away from station
+            let maTrap = document.createElement("td");
+            maTrap.setAttribute("class", "td-box")
+            let maNode = document.createTextNode(minAway);
+            maTrap.appendChild(maNode);
+            addTrain.appendChild(maTrap);
+            theBaudy.appendChild(addTrain);
+            
+        },function(errorObject){
+            console.log("The read failed: " + errorObject.code);
+        });
+
+        
+    };
+    trainMaker();
+
+    // add new train on click
+    
+    // I had to reproduce entire database child snap shot thing here to get my numbers to update.
+    let timerUpdate = function(){
+        theBaudy.innerHTML = ("");
+            trainMaker();
+            
+        
+        
+    };
     newTrainBtn.addEventListener("click", function(){
         event.preventDefault();
         newName = nameInput.value.trim();
@@ -68,184 +189,10 @@ window.onload = function(){
         destinationInput.value = "";
         timeInput.value = "";
         frequencyInput.value = "";
+        timerUpdate();
     });
 
-    // need to make 2 functions for current time 
-
-
-
-    database.ref().on("child_added", function(childSnapshot){
-        // Are you kidding me! An 2 hours of work and all I needed to put in was childSnapshot.key!
-        let key = childSnapshot.key;    
-        // get names from firebase
-        let trainNBlock = childSnapshot.val().trainName;
-        let trainDBlock = childSnapshot.val().trainDestination;
-        let trainFTBlock = childSnapshot.val().trainFirstTime;
-        let trainFBlock = childSnapshot.val().trainFrequency;
-            
-        console.log(trainNBlock);
-        console.log(trainDBlock);
-        console.log(trainFTBlock);
-        console.log(trainFBlock);
-            
-        // first train pushed back a year.
-        let firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
-        console.log(`first time: ${firstTimeConverter}`);
-
-        // the difference between times.
-        let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
-            console.log(`The time difference is: ${diffTime}`)
-
-        // Time remainder before next train
-        let timeRemainder = diffTime % trainFBlock;
-        console.log(`remainder: ${timeRemainder}`)
-
-        // the two below this need to self update.
-            
-        // minutes until it get here.
-        // if()
-        let minAway = trainFBlock - timeRemainder;
-        console.log(`minutes away ${minAway}`)
-
-        // next train
-        let nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
-        console.log(`arrival time: ${nextTrain}`)
-            
-        // make tr Element
-        let addTrain = document.createElement("tr");
-        // addTrain.setAttribute("lock", key)
-                
-        //delete button. 
-        let xTrap = document.createElement("td");
-        let xNode = document.createTextNode("X");
-        xTrap.setAttribute("class", "button t-a-c")
-        xTrap.addEventListener("click", function(){
-        // console.log("click")
-            let closeTr = this.closest("tr");
-            closeTr.remove();
-            
-            var adaRef = firebase.database().ref(key);
-                adaRef.remove().then(function() {
-                console.log("Remove succeeded.")
-                }).catch(function(error){
-                console.log("Remove failed: " + error.message)
-            });    
-        });
-        xTrap.appendChild(xNode);
-        addTrain.appendChild(xTrap);
-            
-        // train name
-        let nTrap = document.createElement("td");
-        let nNode = document.createTextNode(trainNBlock);
-        nTrap.appendChild(nNode);
-        addTrain.appendChild(nTrap);
-
-        // train destination
-        let dTrap = document.createElement("td");
-        let dNode = document.createTextNode(trainDBlock);
-        dTrap.appendChild(dNode);
-        addTrain.appendChild(dTrap);
-
-        // train frequency
-        let fTrap = document.createElement("td");
-        let fNode = document.createTextNode(trainFBlock);
-        fTrap.appendChild(fNode);
-        addTrain.appendChild(fTrap);
-        
-        // train start time.
-        let naTrap = document.createElement("td");
-        naTrap.setAttribute("class", "next-time")
-        let naNode = document.createTextNode(nextTrain);
-        naTrap.appendChild(naNode);
-        addTrain.appendChild(naTrap);
-
-        // minutes away from station
-        let maTrap = document.createElement("td");
-        maTrap.setAttribute("class", "min-away")
-        let maNode = document.createTextNode(minAway);
-        maTrap.appendChild(maNode);
-        addTrain.appendChild(maTrap);
-        theBaudy.appendChild(addTrain);
-        
-    },function(errorObject){
-        console.log("The read failed: " + errorObject.code);
-    });
-
-    // I had to reproduce entire database child snap shot thing here to get my numbers to update.
-    let timerUpdate = function(){
-        theBaudy.innerHTML = ("");
-            database.ref().on("child_added", function(childSnapshot){
-            let key = childSnapshot.key; 
-            // get names from firebase
-           
-            trainNBlock = childSnapshot.val().trainName;
-            trainDBlock = childSnapshot.val().trainDestination;
-            trainFTBlock = childSnapshot.val().trainFirstTime;
-            trainFBlock = childSnapshot.val().trainFrequency;
-            // first train pushed back a year.
-            firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
-            // the difference between times.
-            diffTime = moment().diff(moment(firstTimeConverter), "minutes");
-            // Time remainder before next train
-            timeRemainder = diffTime % trainFBlock;
-            // minutes until it get here.
-            minAway = trainFBlock - timeRemainder;
-            // next train
-            nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
-            // make tr Element
-            addTrain = document.createElement("tr");
-            addTrain.setAttribute("id", key)
-            //delete button. 
-            xTrap = document.createElement("td");
-            xNode = document.createTextNode("X");
-            xTrap.setAttribute("class", "button t-a-c")
-            xTrap.addEventListener("click", function(){
-                this.closest("tr").remove();
-                var adaRef = firebase.database().ref(key);
-                adaRef.remove().then(function() {
-                console.log("Remove succeeded.")
-                }).catch(function(error){
-                console.log("Remove failed: " + error.message)
-            });  
-            });
-            xTrap.appendChild(xNode);
-            addTrain.appendChild(xTrap);
-            // train name
-            nTrap = document.createElement("td");
-            nNode = document.createTextNode(trainNBlock);
-            nTrap.appendChild(nNode);
-            addTrain.appendChild(nTrap);
-            // train destination
-            dTrap = document.createElement("td");
-            dNode = document.createTextNode(trainDBlock);
-            dTrap.appendChild(dNode);
-            addTrain.appendChild(dTrap);
-            // train frequency
-            fTrap = document.createElement("td");
-            fNode = document.createTextNode(trainFBlock);
-            fTrap.appendChild(fNode);
-            addTrain.appendChild(fTrap);
-            // train start time.
-            naTrap = document.createElement("td");
-            naTrap.setAttribute("class", "next-time")
-            naNode = document.createTextNode(nextTrain);
-            naTrap.appendChild(naNode);
-            addTrain.appendChild(naTrap);
-            // minutes away from station
-            maTrap = document.createElement("td");
-            maTrap.setAttribute("class", "min-away")
-            maNode = document.createTextNode(minAway);
-            maTrap.appendChild(maNode);
-            addTrain.appendChild(maTrap);
-            theBaudy.appendChild(addTrain);
-    
-        },function(errorObject){
-            console.log("The read failed: " + errorObject.code);
-        });
-    };
-
-    setInterval(timerUpdate, 1000);
-  
+    setInterval(timerUpdate, 3000);
 }; 
     // an abandond atempt to make a timer to update next arrival and minutes away
     // intervalId = setInterval(count, 1000);
