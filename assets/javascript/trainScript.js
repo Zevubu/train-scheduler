@@ -1,3 +1,5 @@
+// planning notes at the bottum of file.
+
 window.onload = function(){
     let newName;
     let newDestination;
@@ -7,12 +9,15 @@ window.onload = function(){
     let theTime;
     let currentTime;
 
+    let theBaudy = document.getElementById("the-baudy");
+    // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
     let clock = document.getElementById("clock");
     let newTrainBtn = document.getElementById("new-train");
     let nameInput = document.getElementById("name-input");
     let destinationInput = document.getElementById("destination-input");
     let timeInput = document.getElementById("first-time-input");
     let frequencyInput = document.getElementById("frequency-input");
+
     // link to firebase.
     var firebaseConfig = {
         apiKey: FBKEY,
@@ -25,14 +30,13 @@ window.onload = function(){
     };
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-
     let database = firebase.database();
     console.log(database);
 
     console.log(moment().format('MMMM Do YYYY, h:mm:ss a'))
 
         
-    setInterval(function(startTime){
+    setInterval(function(){
         theTime = moment().format('hh:mm:ss a')
         clock.innerHTML = (theTime);
         // console.log(`the time is ${theTime}`)
@@ -66,55 +70,69 @@ window.onload = function(){
         frequencyInput.value = "";
     });
 
-    database.ref().on("child_added", function(childSnapshot, prevChildKey){
-        let child = childSnapshot.val();
-        console.log(child);
-        // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
-        let theBaudy = document.getElementById("the-baudy");
+
+
+    database.ref().on("child_added", function(childSnapshot, child ){
+        // Are you kidding me! An 2 hours of work and all I needed to put in was childSnapshot.key!
+        let key = childSnapshot.key;    
         // get names from firebase
+        console.log("Previous Post ID: " + child)
         let trainNBlock = childSnapshot.val().trainName;
         let trainDBlock = childSnapshot.val().trainDestination;
         let trainFTBlock = childSnapshot.val().trainFirstTime;
         let trainFBlock = childSnapshot.val().trainFrequency;
-
-        // first train pushed back a year.
-        let firstTimeConverter = moment(trainFTBlock, "hh:mm a").subtract(1,"months");
-        console.log(`first time: ${firstTimeConverter}`);
-
-        // the difference between times.
-        let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
-        console.log(`The time difference is: ${diffTime}`)
-
-        // Time remainder before next train
-        let timeRemainder;
-
-        // minutes until it get here.
-        let minAway;
-        
-       
-
-        
+            
         console.log(trainNBlock);
         console.log(trainDBlock);
         console.log(trainFTBlock);
         console.log(trainFBlock);
-        let addTrain = document.createElement("tr");
-        addTrain.setAttribute("value", child)
             
+        // first train pushed back a year.
+        let firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
+        console.log(`first time: ${firstTimeConverter}`);
+
+        // the difference between times.
+        let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
+            console.log(`The time difference is: ${diffTime}`)
+
+        // Time remainder before next train
+        let timeRemainder = diffTime % trainFBlock;
+        console.log(`remainder: ${timeRemainder}`)
+
+        // the two below this need to self update.
+            
+        // minutes until it get here.
+        // if()
+        let minAway = trainFBlock - timeRemainder;
+        console.log(`minutes away ${minAway}`)
+
+        // next train
+        let nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
+        console.log(`arrival time: ${nextTrain}`)
+            
+        // make tr Element
+        let addTrain = document.createElement("tr");
+        // addTrain.setAttribute("lock", key)
+                
         //delete button. 
         let xTrap = document.createElement("td");
         let xNode = document.createTextNode("X");
         xTrap.setAttribute("class", "button t-a-c")
         xTrap.addEventListener("click", function(){
-            console.log("click")
-            // let fireVal = this.getAttribute("value")
-            // database.remove(fireVal)
-            this.closest("tr").remove();
-
+        console.log("click")
+        let closeTr = this.closest("tr");
+        closeTr.remove();
+            
+        var adaRef = firebase.database().ref(key);
+            adaRef.remove().then(function() {
+            console.log("Remove succeeded.")
+            }).catch(function(error){
+            console.log("Remove failed: " + error.message)
+            });    
         });
         xTrap.appendChild(xNode);
         addTrain.appendChild(xTrap);
-        
+            
         // train name
         let nTrap = document.createElement("td");
         let nNode = document.createTextNode(trainNBlock);
@@ -134,15 +152,111 @@ window.onload = function(){
         addTrain.appendChild(fTrap);
         
         // train start time.
-        let ftTrap = document.createElement("td");
-        let ftNode = document.createTextNode(trainFTBlock);
-        ftTrap.appendChild(ftNode);
-        addTrain.appendChild(ftTrap);
+        let naTrap = document.createElement("td");
+        naTrap.setAttribute("class", "next-time")
+        let naNode = document.createTextNode(nextTrain);
+        naTrap.appendChild(naNode);
+        addTrain.appendChild(naTrap);
 
+        // minutes away from station
+        let maTrap = document.createElement("td");
+        maTrap.setAttribute("class", "min-away")
+        let maNode = document.createTextNode(minAway);
+        maTrap.appendChild(maNode);
+        addTrain.appendChild(maTrap);
         theBaudy.appendChild(addTrain);
+      
+      
+        
+    },function(errorObject){
+        console.log("The read failed: " + errorObject.code);
     });
 
+    // I had to reproduce entire database child snap shot thing here to get my numbers to update.
+    let timerUpdate = function(){
+        count = 0
+        theBaudy.innerHTML = ("");
+            database.ref().on("child_added", function(childSnapshot, prevChildKey){
+            let key = prevChildKey;
+            // get names from firebase
+            if(count > 0){
+            trainNBlock = childSnapshot.val().trainName;
+            trainDBlock = childSnapshot.val().trainDestination;
+            trainFTBlock = childSnapshot.val().trainFirstTime;
+            trainFBlock = childSnapshot.val().trainFrequency;
+            // first train pushed back a year.
+            firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
+            // the difference between times.
+            diffTime = moment().diff(moment(firstTimeConverter), "minutes");
+            // Time remainder before next train
+            timeRemainder = diffTime % trainFBlock;
+            // minutes until it get here.
+            minAway = trainFBlock - timeRemainder;
+            // next train
+            nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
+            // make tr Element
+            addTrain = document.createElement("tr");
+            addTrain.setAttribute("id", key)
+            //delete button. 
+            xTrap = document.createElement("td");
+            xNode = document.createTextNode("X");
+            xTrap.setAttribute("class", "button t-a-c")
+            xTrap.addEventListener("click", function(){
+                this.closest("tr").remove();
+            });
+            xTrap.appendChild(xNode);
+            addTrain.appendChild(xTrap);
+            // train name
+            nTrap = document.createElement("td");
+            nNode = document.createTextNode(trainNBlock);
+            nTrap.appendChild(nNode);
+            addTrain.appendChild(nTrap);
+            // train destination
+            dTrap = document.createElement("td");
+            dNode = document.createTextNode(trainDBlock);
+            dTrap.appendChild(dNode);
+            addTrain.appendChild(dTrap);
+            // train frequency
+            fTrap = document.createElement("td");
+            fNode = document.createTextNode(trainFBlock);
+            fTrap.appendChild(fNode);
+            addTrain.appendChild(fTrap);
+            // train start time.
+            naTrap = document.createElement("td");
+            naTrap.setAttribute("class", "next-time")
+            naNode = document.createTextNode(nextTrain);
+            naTrap.appendChild(naNode);
+            addTrain.appendChild(naTrap);
+            // minutes away from station
+            maTrap = document.createElement("td");
+            maTrap.setAttribute("class", "min-away")
+            maNode = document.createTextNode(minAway);
+            maTrap.appendChild(maNode);
+            addTrain.appendChild(maTrap);
+            theBaudy.appendChild(addTrain);
+            count++;
+            }
+            else{
+            count++;
+            };
+        },function(errorObject){
+            console.log("The read failed: " + errorObject.code);
+        });
+    };
 
+    setInterval(timerUpdate, 223000);
+  
+}; 
+    // an abandond atempt to make a timer to update next arrival and minutes away
+    // intervalId = setInterval(count, 1000);
+    // let timeConvert = timeConverter()
+
+    // let timeConverter = function(t){
+    //     let minutes = Math.floor(t/60);
+    //     let seconds = Math.floor(minutes * 60);
+        
+    //     if
+    // }
 
     // pull data from my trian form.
 
@@ -169,5 +283,13 @@ window.onload = function(){
 
     // original time pushed back a year so it's definetly before this moment. 
 
-    // current time. 
-};
+    // current time.  
+    // my early attepmts to delete old info from fire base.
+    // let snap = child;
+        // let key = snap.key
+        // let value = snap.value
+        // print("key = \(key)  value = \(value!)")
+        // let key =  Object.keys(data)[0];
+        // console.log(`the key is: ${key}`)
+        // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
+       
