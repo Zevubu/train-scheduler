@@ -7,7 +7,8 @@ window.onload = function(){
     let frequency;
     let newTrain;
     let theTime;
-    let currentTime;
+    let consoledTrains = 0;
+    let trainCount = 0;
 
     let theBaudy = document.getElementById("the-baudy");
     // it's not tbody... it's The Baudy darling! So good it needed to be stated twice.
@@ -57,48 +58,34 @@ window.onload = function(){
             let trainFTBlock = childSnapshot.val().trainFirstTime;
             let trainFBlock = childSnapshot.val().trainFrequency;
                 
-            console.log(trainNBlock);
-            console.log(trainDBlock);
-            console.log(trainFTBlock);
-            console.log(trainFBlock);
-                
             // first train pushed back a year.
             let firstTimeConverter = moment(trainFTBlock, "hh:mm:ss a").subtract(1,"months");
-            console.log(`first time: ${firstTimeConverter}`);
-
+          
             // the difference between times.
             let diffTime = moment().diff(moment(firstTimeConverter), "minutes");
-                console.log(`The time difference is: ${diffTime}`)
-
+            
             // Time remainder before next train
             let timeRemainder = diffTime % trainFBlock;
-            console.log(`remainder: ${timeRemainder}`)
 
-            // the two below this need to self update.
-                
+            // the two below this need to self update... they do by updatiing them all.               
             // minutes until it get here.
-            // if()
             let minAway = trainFBlock - timeRemainder;
-            console.log(`minutes away ${minAway}`)
-
+        
             // next train
             let nextTrain = moment().add(minAway, "minutes").format('hh:mm a');
-            console.log(`arrival time: ${nextTrain}`)
                 
             // make tr Element
             let addTrain = document.createElement("tr");
             addTrain.setAttribute("class", "tr-box")
-            // addTrain.setAttribute("lock", key)
-                    
+                 
             //delete button. 
             let xTrap = document.createElement("td");
             let xNode = document.createTextNode("X");
             xTrap.setAttribute("class", "td-box button t-a-c")
             xTrap.addEventListener("click", function(){
-            // console.log("click")
                 let closeTr = this.closest("tr");
                 closeTr.remove();
-                
+                // lets the database no which child to remove
                 var adaRef = firebase.database().ref(key);
                     adaRef.remove().then(function() {
                     console.log("Remove succeeded.")
@@ -145,6 +132,19 @@ window.onload = function(){
             addTrain.appendChild(maTrap);
             theBaudy.appendChild(addTrain);
             
+            // open section below to console log each train info.
+
+                // console.log(`Name: ${trainNBlock}`);
+                // console.log(`Destination: ${trainDBlock}`);
+                // console.log(`Firt train of day: ${trainFTBlock}`);
+                // console.log(`Frequency: ${trainFBlock}`);
+                // console.log(`first time: ${firstTimeConverter}`);
+                // console.log(`The time difference is: ${diffTime}`)
+                // console.log(`remainder: ${timeRemainder}`)
+                // console.log(`minutes away ${minAway}`)
+                // console.log(`arrival time: ${nextTrain}`)
+            
+            
         },function(errorObject){
             console.log("The read failed: " + errorObject.code);
         });
@@ -154,15 +154,23 @@ window.onload = function(){
     trainMaker();
 
     // add new train on click
+   
+        let timeToUpdate = parseInt(moment().format('s'));
+        console.log(`seconds into minute: ${timeToUpdate}`);
+        timeToUpdate = (((60 - timeToUpdate) * 1000));
+        console.log(`Seconds remaining times 1000: ${timeToUpdate}`);
     
+    let updateCount = 0
     // I had to reproduce entire database child snap shot thing here to get my numbers to update.
     let timerUpdate = function(){
         theBaudy.innerHTML = ("");
-            trainMaker();
-            
-        
-        
+        updateCount++;
+        console.log(`times info updated: ${updateCount}`);
+        trainMaker();
     };
+    
+    setInterval(timerUpdate, timeToUpdate);
+
     newTrainBtn.addEventListener("click", function(){
         event.preventDefault();
         newName = nameInput.value.trim();
@@ -173,26 +181,40 @@ window.onload = function(){
         console.log(firstTime);
         frequency = frequencyInput.value.trim();
         console.log(frequency);
+        let nameCheck = newName.length
+        let destCheck = newDestination.length
+        let ftCheck = firstTime.length
+        let fCheck = frequency.length
+        console.log(`name check: ${nameCheck}`)
+        console.log(`Destination check: ${destCheck}`)
+        console.log(`first time check: ${ftCheck}`)
+        console.log(`frequency check: ${fCheck}`)
 
-        newTrain = {
-            trainName: newName,
-            trainDestination: newDestination,
-            trainFirstTime: firstTime,
-            trainFrequency: frequency,
-        };
-        // need to add paramiters so you have to have all boxes filled
+        // form validation makes sure all feilds are filled out 
+        if(nameCheck > 0 && destCheck > 0 && ftCheck > 0 && fCheck > 0){
 
-        database.ref().push(newTrain);
-        console.log(newTrain);
+        
+            newTrain = {
+                trainName: newName,
+                trainDestination: newDestination,
+                trainFirstTime: firstTime,
+                trainFrequency: frequency,
+            };
+            // need to add paramiters so you have to have all boxes filled
 
-        nameInput.value = "";
-        destinationInput.value = "";
-        timeInput.value = "";
-        frequencyInput.value = "";
-        timerUpdate();
+            database.ref().push(newTrain);
+            console.log(newTrain);
+
+            nameInput.value = "";
+            destinationInput.value = "";
+            timeInput.value = "";
+            frequencyInput.value = "";
+            timerUpdate();
+        }
+        else{
+            alert("All fields must be filled out! to submit a new train")
+        }    
     });
-
-    setInterval(timerUpdate, 3000);
 }; 
     // an abandond atempt to make a timer to update next arrival and minutes away
     // intervalId = setInterval(count, 1000);

@@ -5,8 +5,23 @@ body{
     background-size: cover;
     background-position-x: center;
     background-position-y: 20%;
-    color: rgb(255, 255, 255);
-    text-shadow: 2px 2px rgb(63, 8, 8);
+    font-family: 'Share Tech Mono', monospace;
+    color: rgb(107, 255, 230);
+    font-size: 18px;
+    
+}
+.tb-shadow{
+    text-shadow: 5px 2px rgb(27, 3, 3);
+}
+.ts-shadow{
+    text-shadow: 2px 1px rgb(27, 3, 3);
+}
+.head-box{
+    margin-top: 2%;
+    margin-bottom:2%;
+}
+.head-text{
+    margin: 1%;
 }
 .row-box-s-e{
     display: flex;
@@ -30,6 +45,17 @@ body{
     justify-content: center;
     
 }
+.form-big-box{
+    width: 75%;
+    height: auto;
+    margin: 5%;
+    font-size: 20px
+
+}
+.form-box{
+    margin: 1%;
+
+}
 
 .t-a-c{
     text-align: center;
@@ -41,6 +67,9 @@ border: black solid 2px;
 background-color: rgba(161, 161, 161, 0.432);
 margin: 2px;
 text-align: center;
+}
+.fog{
+    background-color: rgba(161, 161, 161, 0.432);
 }
 .button{
     background-color: rgb(65, 65, 65);
@@ -63,9 +92,15 @@ text-align: center;
 h1{
     font-size: 50px;
 }
+h2{
+    font-size: 40px;
+}
 
 h3{
     font-size: 30px;
+}
+h4{
+    font-size: 20px
 }
 
 .label-text{
@@ -82,8 +117,7 @@ h3{
         background-size: inherit;
         background-position-x: center;
         background-position-y: 20%;
-        color: rgb(255, 255, 255);
-        text-shadow: 2px 2px rgb(63, 8, 8);
+        font-size: 15px;
     }
 
 }

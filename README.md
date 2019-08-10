@@ -1,5 +1,12 @@
 # train-scheduler
-A page that uses momentjs to determine display when trains will be arriving and departing.  
+A page that uses moment.js to display when trains will be arriving and departing.
+
+The form has form validation all field must be filled out in order to submit. 
+When you delete a train from the list it deletes that same train from the firebase repository as well.
+Minutes away and next arrival self update every 3 seconds. (Id like to figure out how to do this so it updates every minute on the minute)
+HAHAHAHA evil laugh I did it it now updates every minute on the minute! NO longer shall I waist extra possessing power updating to often
+(NOPE that just made it update ever millisecond)Aha! I pulled some components out took it out of a function and walla it's working again!
+
 
 before you start create a folder inside of the assets/javascript file called keys.js.
 Inside of keys.js print the fallowing variable.

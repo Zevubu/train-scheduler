@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Train scedule</title>
-    <!-- resets then base css -->
+    <!-- resets, fonts, base css -->
     <link rel="stylesheet" type="text/css" href="assets/css/resets.css">
+    <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
 </head>
 <body>
-    <header class="row-box-center">
-        <section class="column-box-s-e t-a-c t-shadow">
-            <h1 >Metropolis</h1>
-            <h1>Train Scheduler</h1>
-            <h4>The current time is:<span id="clock"></span></h4>
-            <h3> Fill out form below to schedule your trains.</h3>
+    <header class="row-box-center head-box">
+        <section class="column-box-s-e t-a-c tb-shadow fog">
+            <h1 class="head-text">METROPOLIS</h1>
+            <h2 class="head-text">Train Scheduler</h2>
+            <h4 class="head-text">The Current Time Is:<span id="clock"></span></h4>
+            <h3 class="head-text"> Fillout Form Below to Schedule Your Trains.</h3>
         </section>
     </header>
     <main class="row-box-center">
         <section class="column-box-s-e">
-            <section class="column-box-s-e t-a-c">
+            <section class="column-box-s-e t-a-c ts-shadow">
                 <h4>Current train schedule</h4>
-                <section>
-                    <table>
+                <section >
+                    <table >
                         <thead>
                             <tr class="tr-box">
                                 <th class="td-box" scope="col">Delete: </th>
@@ -39,23 +40,23 @@
                     </table>
                 </section>
             </section>
-            <section class="column-box-s-e">
+            <section class="column-box-s-e fog">
                 <section id="name-section" class="row-box-s-e">
-                    <form>
-                        <section class="column-box-center">
-                            <label for="name-input" class="label-text">Name new train here.</label>
+                    <form class="column-box-s-e form-big-box ts-shadow">
+                        <section class="column-box-center form-box">
+                            <label for="name-input" class="label-text">New Trains Name:</label>
                             <input type="text" class="form-controler" id="name-input">
                         </section>
-                        <section class="column-box-center">
-                            <label for="destination-input" class="label-text">Destination</label>
+                        <section class="column-box-center form-box">
+                            <label for="destination-input" class="label-text">Destination:</label>
                             <input type="text" class="form-controler" id="destination-input">
                         </section>
-                        <section class="column-box-center">
+                        <section class="column-box-center form-box">
                             <label for="first-time-input" class="label-text">The first train leaves at:</label>
                             <input type="time" data-format="HH:mm"  class="form-controler" id="first-time-input">
                         </section>
-                        <section class="column-box-center">
-                            <label for="frequency-input" class="label-text">Frequency by Minute</label>
+                        <section class="column-box-center form-box">
+                            <label for="frequency-input" class="label-text">Frequency by Minute:</label>
                             <input type="number" min=0 class="form-controler" id="frequency-input">
                         </section>
                         <p type="submit"  class="sub-btn button t-a-c" id="new-train">Submit</p>
