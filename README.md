@@ -1,5 +1,6 @@
 # train-scheduler
 A page that uses moment.js to time trains and firebase to store and display them.
+I use pure Java-script for this no jquery.
 
 Before you start create a folder inside of the assets/javascript file called keys.js. 
 
